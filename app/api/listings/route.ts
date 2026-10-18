@@ -1,63 +1,75 @@
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET: Fetch all listings for the Marketplace
+// Mock data for demo (since SQLite doesn't work on Vercel)
+const mockListings = [
+  {
+    id: "1",
+    title: "Fresh Bread",
+    quantityKg: 5,
+    expiryDate: "2026-10-20T10:00:00Z",
+    description: "Freshly baked croissants from this morning.",
+    imageUrl: "",
+    business: {
+      businessName: "Qout Demo Bakery",
+    },
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    title: "Grilled Chicken Meals",
+    quantityKg: 8,
+    expiryDate: "2026-10-19T20:00:00Z",
+    description: "Prepared meals ready for pickup.",
+    imageUrl: "",
+    business: {
+      businessName: "City Grill House",
+    },
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "3",
+    title: "Assorted Vegetables",
+    quantityKg: 25,
+    expiryDate: "2026-10-21T18:00:00Z",
+    description: "Mixed vegetables, slightly imperfect but perfectly good.",
+    imageUrl: "",
+    business: {
+      businessName: "Green Grocers",
+    },
+    createdAt: new Date().toISOString(),
+  },
+];
+
+// GET: Return mock listings
 export async function GET() {
-  try {
-    const listings = await prisma.foodListing.findMany({
-      include: {
-        business: true, // Include business name
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return NextResponse.json(listings);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch listings" }, { status: 500 });
-  }
+  return NextResponse.json(mockListings);
 }
 
-// POST: Create a new listing from the Supplier Dashboard
+// POST: Accept new listings (stored in memory only - resets on redeploy)
+let dynamicListings: any[] = [];
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, quantity, expiry, description, imageUrl } = body;
+    const { title, quantity, expiry, description } = body;
 
-    // For this demo, we automatically find or create a default business to link the food to
-    let business = await prisma.business.findFirst();
-    
-    if (!business) {
-      const user = await prisma.user.create({
-        data: {
-          email: "demo@qout.com",
-          name: "Demo Supplier",
-          role: "SUPPLIER",
-        },
-      });
-      business = await prisma.business.create({
-        data: {
-          userId: user.id,
-          businessName: "Qout Demo Bakery",
-          address: "123 Main Street",
-        },
-      });
-    }
-
-    const listing = await prisma.foodListing.create({
-      data: {
-        title: title,
-        quantityKg: parseFloat(quantity),
-        expiryDate: new Date(expiry),
-        description: description || "",
-        imageUrl: imageUrl || "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800",
-        businessId: business.id,
+    const newListing = {
+      id: String(Date.now()),
+      title: title,
+      quantityKg: parseFloat(quantity),
+      expiryDate: expiry,
+      description: description || "No description provided.",
+      imageUrl: "",
+      business: {
+        businessName: "Qout Demo Bakery",
       },
-    });
+      createdAt: new Date().toISOString(),
+    };
 
-    return NextResponse.json(listing);
+    dynamicListings = [newListing, ...dynamicListings];
+
+    return NextResponse.json(newListing);
   } catch (error) {
-    console.error(error);
     return NextResponse.json({ error: "Failed to create listing" }, { status: 500 });
   }
 }
