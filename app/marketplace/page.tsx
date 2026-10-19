@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageThemeSwitcher } from "../components/LanguageThemeSwitcher";
+import { AIChatWidget } from "../components/AIChatWidget";
 import Link from "next/link";
 import { Button } from "../components/ui/button";
 import { Leaf, MapPin, Clock, ArrowLeft, Package, Apple, Wheat, Carrot, Search, Sparkles } from "lucide-react";
@@ -42,46 +43,39 @@ export default function MarketplacePage() {
 
   const handleAISearch = async () => {
     if (!searchQuery.trim()) return;
-
     setIsSearching(true);
     setHasSearched(true);
-
     try {
       const response = await fetch("/api/ai-match", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery }),
       });
-
       const data = await response.json();
-
       if (data.success) {
         setListings(data.listings);
         setMatchMessage(data.message);
-      } else {
-        setMatchMessage("حدث خطأ أثناء البحث");
       }
     } catch (error) {
-      console.error("Search error:", error);
-      setMatchMessage("حدث خطأ في الاتصال");
+      console.error(error);
     } finally {
       setIsSearching(false);
     }
   };
 
   const getIconForListing = (listing: Listing) => {
-    if (listing.category && foodIcons[listing.category]) {
-      return foodIcons[listing.category];
-    }
+    if (listing.category && foodIcons[listing.category]) return foodIcons[listing.category];
     return foodIcons.default;
   };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
-      {/* Fixed Switchers */}
       <div className="fixed top-4 right-4 z-50 flex gap-2">
         <LanguageThemeSwitcher />
       </div>
+
+      {/* AI Chat Widget */}
+      <AIChatWidget />
 
       {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -90,15 +84,20 @@ export default function MarketplacePage() {
             <img src="/logo.png" alt="Qout Logo" width="40" height="40" style={{ width: "40px", height: "40px", objectFit: "contain" }} />
             <span className="text-xl font-bold text-gray-900 dark:text-white">{t("brand.name")}</span>
           </Link>
-          <Link href="/">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" /> الرئيسية
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/stats">
+              <Button variant="outline" size="sm">الإحصائيات</Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" /> الرئيسية
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* AI Search Hero Section */}
+      {/* AI Search Hero */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 dark:from-teal-800 dark:to-teal-900 text-white py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -108,8 +107,6 @@ export default function MarketplacePage() {
           <p className="text-teal-100 mb-8 text-lg">
             اكتب طلبك بالعربية الطبيعية — المساعد يفهم ويبحث عن المورد المناسب تلقائياً
           </p>
-
-          {/* AI Search Input */}
           <div className="relative max-w-2xl mx-auto">
             <input
               type="text"
@@ -129,17 +126,12 @@ export default function MarketplacePage() {
               {isSearching ? "جاري البحث..." : "ابحث"}
             </Button>
           </div>
-
-          {/* Example Queries */}
           <div className="mt-6 flex flex-wrap justify-center gap-2 text-sm">
             <span className="text-teal-200">أمثلة:</span>
             {["أحتاج 500 كجم صلصة", "فائض زيوت للبيع", "تابلعات بكميات كبيرة"].map((example) => (
               <button
                 key={example}
-                onClick={() => {
-                  setSearchQuery(example);
-                  handleAISearch();
-                }}
+                onClick={() => { setSearchQuery(example); handleAISearch(); }}
                 className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
               >
                 {example}
@@ -149,7 +141,7 @@ export default function MarketplacePage() {
         </div>
       </div>
 
-      {/* Results Section */}
+      {/* Results */}
       <main className="max-w-6xl mx-auto px-6 py-8">
         {hasSearched && (
           <div className="mb-6 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
@@ -170,7 +162,7 @@ export default function MarketplacePage() {
           <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
             <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">لا توجد نتائج</h3>
-            <p className="text-gray-500 mb-6">جرب كلمات مختلفة أو تصفح جميع المنتجات</p>
+            <p className="text-gray-500 mb-6">جرب كلمات مختلفة</p>
             <Button onClick={() => { setSearchQuery(""); setHasSearched(false); }} className="bg-teal-600 hover:bg-teal-700 text-white">
               بحث جديد
             </Button>
@@ -180,48 +172,30 @@ export default function MarketplacePage() {
             {listings.map((item) => {
               const IconComponent = getIconForListing(item);
               return (
-                <div
-                  key={item.id}
-                  className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                  {/* Colored Icon Header */}
+                <div key={item.id} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-32 bg-gradient-to-br from-teal-50 to-emerald-100 dark:from-teal-950 dark:to-emerald-950 flex items-center justify-center">
                     <IconComponent className="w-12 h-12 text-teal-600 dark:text-teal-400" />
                   </div>
-
-                  {/* Content */}
                   <div className="p-4">
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-1 text-base">
-                      {item.title}
-                    </h3>
-
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-1 text-base">{item.title}</h3>
                     <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-2">
                       <MapPin className="w-3 h-3" />
                       <span>{item.businessName || item.business?.businessName}</span>
                       {item.city && <span className="mx-1">• {item.city}</span>}
                     </div>
-
                     <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3 pt-2 border-t border-gray-100 dark:border-gray-800">
                       <span className="flex items-center gap-1">
-                        <Leaf className="w-3 h-3 text-teal-600" />
-                        {item.quantityKg} كجم
+                        <Leaf className="w-3 h-3 text-teal-600" /> {item.quantityKg} كجم
                       </span>
                       {item.pricePerKg && (
-                        <span className="flex items-center gap-1">
-                          <span className="text-amber-600 font-semibold">{item.pricePerKg} ر.س/كجم</span>
-                        </span>
-                      )}
-                      {item.expiryMonths && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-amber-600" />
-                          {item.expiryMonths} شهر
-                        </span>
+                        <span className="text-amber-600 font-semibold">{item.pricePerKg} ر.س/كجم</span>
                       )}
                     </div>
-
-                    <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white text-xs py-2 h-9">
-                      طلب شراء
-                    </Button>
+                    <Link href="/checkout">
+                      <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white text-xs py-2 h-9">
+                        طلب شراء
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               );

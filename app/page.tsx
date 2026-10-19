@@ -5,10 +5,10 @@ import { LanguageThemeSwitcher } from "./components/LanguageThemeSwitcher";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./components/ui/button";
-import { Leaf, Heart, Users, TrendingUp, ArrowRight } from "lucide-react";
+import { Leaf, Heart, Users, TrendingUp, ArrowRight, BarChart3 } from "lucide-react";
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-300">
@@ -25,9 +25,12 @@ export default function Home() {
             <span className="text-2xl font-bold text-gray-900 dark:text-white">{t("brand.name")}</span>
           </div>
 
-          <nav className="hidden md:flex gap-8">
+          <nav className="hidden md:flex gap-6 items-center">
             <Link href="/marketplace" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
               {t("nav.marketplace")}
+            </Link>
+            <Link href="/stats" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
+              {language === "ar" ? "الإحصائيات" : "Stats"}
             </Link>
             <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
               {t("nav.about")}
@@ -80,6 +83,15 @@ export default function Home() {
         {/* Stats Section */}
         <section className="bg-gray-50 dark:bg-gray-800 py-16 border-y border-gray-100 dark:border-gray-700 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                {language === "ar" ? "أثرنا على أرض الواقع" : "Our Real-World Impact"}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                {language === "ar" ? "أرقام تعكس التزامنا بتقليل الهدر الغذائي" : "Numbers reflecting our commitment to reducing food waste"}
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
               <div className="p-6">
                 <Leaf className="w-10 h-10 text-teal-600 mx-auto mb-3" />
@@ -101,6 +113,16 @@ export default function Home() {
                 <h3 className="text-3xl font-bold text-gray-900 dark:text-white">2.5T</h3>
                 <p className="text-gray-600 dark:text-gray-300 mt-1">{t("stats.co2Reduced")}</p>
               </div>
+            </div>
+
+            {/* New Button to link to the full Stats page */}
+            <div className="text-center mt-10">
+              <Link href="/stats">
+                <Button variant="outline" size="lg" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 px-8 py-3 text-base">
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  {language === "ar" ? "عرض التقرير الكامل" : "View Full Report"}
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
