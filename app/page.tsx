@@ -12,11 +12,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-300">
-      {/* Language & Theme Switcher - Fixed Top Right */}
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
       {/* Navigation Header */}
       <header className="w-full bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -40,7 +35,10 @@ export default function Home() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Language & Theme Switcher - Now inside header */}
+            <LanguageThemeSwitcher />
+            
             <Link href="/auth/signin">
               <Button variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20">
                 {t("nav.signIn")}
@@ -115,7 +113,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* New Button to link to the full Stats page */}
             <div className="text-center mt-10">
               <Link href="/stats">
                 <Button variant="outline" size="lg" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 px-8 py-3 text-base">
