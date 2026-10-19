@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LanguageThemeSwitcher } from "../../components/LanguageThemeSwitcher";
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
-import { ArrowRight, Send, Package, CheckCircle, Clock } from "lucide-react";
+import { ArrowRight, Send, Package, CheckCircle } from "lucide-react";
 
 interface Message {
   id: number;
@@ -13,7 +13,11 @@ interface Message {
   time: string;
 }
 
-export default function ChatPage({ params }: { params: { id: string } }) {
+// FIX: Changed to async and added Promise type for params
+export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
+  // We don't strictly need to use 'id' for this mock, but we await it to prevent build errors
+  // const { id } = await params; 
+
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: "مرحباً، أنا مهتم بطلب 500 كجم من صلصة ناكيبا. هل السعر قابل للتفاوض؟", sender: "buyer", time: "10:30 ص" },
     { id: 2, text: "أهلاً بك! نعم، يمكننا مناقشة السعر للكميات الكبيرة. ما هو العرض الذي تقترحه؟", sender: "supplier", time: "10:32 ص" },
