@@ -5,167 +5,251 @@ import { LanguageThemeSwitcher } from "./components/LanguageThemeSwitcher";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./components/ui/button";
-import { Leaf, Heart, Users, TrendingUp, ArrowRight, BarChart3 } from "lucide-react";
+import { Leaf, BarChart3, Package, MessageCircle, Settings, TrendingUp, Sparkles, Send, Bot, ArrowLeft, ShoppingBag, User } from "lucide-react";
+import { useState } from "react";
+
+interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+  action?: {
+    label: string;
+    href: string;
+  };
+}
+
+const quickActions = [
+  { label: "🔍 ابحث عن موردين", href: "/marketplace", icon: "search" },
+  { label: "📊 عرض الإحصائيات", href: "/stats", icon: "stats" },
+  { label: "🏭 لوحة تحكم المورد", href: "/supplier/dashboard", icon: "dashboard" },
+  { label: " إتمام طلب", href: "/checkout", icon: "checkout" },
+];
+
+const exampleQueries = [
+  "أحتاج 500 كجم صلصة من الرياض",
+  "فائض زيوت للبيع",
+  "تابلعات بكميات كبيرة",
+  "عصائر طازجة بكميات كبيرة",
+];
 
 export default function Home() {
   const { t, language } = useLanguage();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      text: "مرحباً بك في قوت! 🌱\nأنا مساعدك الذكي لإدارة فائض الطعام.\n\nكيف يمكنني مساعدتك اليوم؟",
+      isUser: false,
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now(),
+      text: text,
+      isUser: true,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
+
+    // Simulate AI response with smart routing
+    setTimeout(() => {
+      let aiResponse: Message;
+      
+      if (text.includes("إحصائ") || text.includes("stats") || text.includes("أرقام")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: " إليك إحصائيات منصة قوت:\n\n• 40+ منشأة مسجلة\n• 120 طن فائض غذائي\n• 85% معدل المطابقة\n• 3 مدن مغطاة\n\nهل تريد عرض التفاصيل الكاملة؟",
+          isUser: false,
+          action: { label: "عرض الإحصائيات الكاملة", href: "/stats" },
+        };
+      } else if (text.includes("سوق") || text.includes("marketplace") || text.includes("بحث") || text.includes("مورد")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: "🔍 جاري البحث عن الموردين المناسبين...\n\nوجدت 3 نتائج مطابقة لطلبك:\n\n1. مصنع الذهب - صلصة ناكيبا (2000 كجم)\n2. معمل النخيل - فائض زيوت (800 كجم)\n3. مستودع الأمين - تابلعات (5000 كجم)\n\nهل تريد عرض السوق الكامل؟",
+          isUser: false,
+          action: { label: "فتح السوق", href: "/marketplace" },
+        };
+      } else if (text.includes("لوحة") || text.includes("dashboard") || text.includes("تحكم")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: "🏭 مرحباً بك في لوحة التحكم!\n\nلديك:\n• 12 منتج نشط\n• 5 طلبات قيد الانتظار\n• 28 صفقة مكتملة\n• 3 رسائل جديدة\n\nهل تريد الدخول للوحة التحكم؟",
+          isUser: false,
+          action: { label: "دخول لوحة التحكم", href: "/supplier/dashboard" },
+        };
+      } else if (text.includes("دفع") || text.includes("checkout") || text.includes("طلب")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: "💳 ملخص طلبك:\n\n• قيمة المنتجات: 9,000 ر.س\n• رسوم التوصيل: 350 ر.س\n• رسوم الخدمة: 270 ر.س\n• الإجمالي: 9,620 ر.س\n\nهل تريد إتمام الدفع؟",
+          isUser: false,
+          action: { label: "إتمام الطلب", href: "/checkout" },
+        };
+      } else {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: `فهمت طلبك: "${text}"\n\nيمكنني مساعدتك في:\n البحث عن موردين\n📊 عرض الإحصائيات\n🏭 إدارة لوحة التحكم\n💳 إتمام الطلبات\n\nما الذي تريد فعله؟`,
+          isUser: false,
+        };
+      }
+
+      setMessages((prev) => [...prev, aiResponse]);
+      setIsTyping(false);
+    }, 1200);
+  };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-300">
-      {/* Navigation Header */}
-      <header className="w-full bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex" dir="rtl">
+      {/* Sidebar Navigation */}
+      <aside className="w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex flex-col fixed h-full">
+        {/* Logo */}
+        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+          <Link href="/" className="flex items-center gap-3">
             <Image src="/logo.png" alt="Qout Logo" width={40} height={40} className="object-contain" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{t("brand.name")}</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">قوت</span>
+          </Link>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-2">
+          <Link href="/marketplace" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <ShoppingBag className="w-5 h-5 text-teal-600" />
+            <span className="text-gray-700 dark:text-gray-300">السوق</span>
+          </Link>
+          <Link href="/stats" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <BarChart3 className="w-5 h-5 text-teal-600" />
+            <span className="text-gray-700 dark:text-gray-300">الإحصائيات</span>
+          </Link>
+          <Link href="/supplier/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <Package className="w-5 h-5 text-teal-600" />
+            <span className="text-gray-700 dark:text-gray-300">لوحة التحكم</span>
+          </Link>
+          <Link href="/checkout" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <TrendingUp className="w-5 h-5 text-teal-600" />
+            <span className="text-gray-700 dark:text-gray-300">الطلبات</span>
+          </Link>
+        </nav>
+
+        {/* User Profile */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+          <Link href="/auth/signin" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <User className="w-5 h-5 text-teal-600" />
+            <span className="text-gray-700 dark:text-gray-300">تسجيل الدخول</span>
+          </Link>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 mr-64 flex flex-col">
+        {/* Top Bar */}
+        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-teal-600" />
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">مساعد قوت الذكي</h1>
           </div>
+          <LanguageThemeSwitcher />
+        </header>
 
-          <nav className="hidden md:flex gap-6 items-center">
-            <Link href="/marketplace" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
-              {t("nav.marketplace")}
-            </Link>
-            <Link href="/stats" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
-              {language === "ar" ? "الإحصائيات" : "Stats"}
-            </Link>
-            <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
-              {t("nav.about")}
-            </Link>
-            <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-teal-600 font-medium transition-colors">
-              {t("nav.contact")}
-            </Link>
-          </nav>
+        {/* Chat Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex ${msg.isUser ? "justify-start" : "justify-end"}`}>
+              <div className={`max-w-[70%] ${msg.isUser ? "order-2" : "order-1"}`}>
+                <div
+                  className={`p-4 rounded-2xl ${
+                    msg.isUser
+                      ? "bg-teal-600 text-white rounded-br-sm"
+                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-bl-sm shadow-sm"
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-line">{msg.text}</p>
+                  {msg.action && (
+                    <Link href={msg.action.href} className="mt-3 inline-block">
+                      <Button className="bg-teal-600 hover:bg-teal-700 text-white text-sm">
+                        {msg.action.label} <ArrowLeft className="w-4 h-4 mr-1" />
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="flex justify-end">
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
-          <div className="flex items-center gap-3">
-            {/* Language & Theme Switcher - Now inside header */}
-            <LanguageThemeSwitcher />
-            
-            <Link href="/auth/signin">
-              <Button variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20">
-                {t("nav.signIn")}
+        {/* Quick Actions */}
+        {messages.length <= 1 && (
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> إجراءات سريعة:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {quickActions.map((action, index) => (
+                <Link key={index} href={action.href}>
+                  <Button variant="outline" size="sm" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                    {action.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Input Area */}
+        <div className="p-6 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="max-w-4xl mx-auto">
+            {/* Example Queries */}
+            {messages.length <= 1 && (
+              <div className="mb-4 flex flex-wrap gap-2 justify-center">
+                {exampleQueries.map((query, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSend(query)}
+                    className="text-xs px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 transition-colors border border-gray-200 dark:border-gray-700"
+                  >
+                    {query}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
+                placeholder="اكتب طلبك هنا... مثال: أحتاج 500 كجم صلصة"
+                className="flex-1 px-6 py-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+              />
+              <Button
+                onClick={() => handleSend(input)}
+                disabled={!input.trim()}
+                className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+              >
+                <Send className="w-5 h-5" />
               </Button>
-            </Link>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-3">
+              قوت يمكن أن يرتكب أخطاء. تحقق من المعلومات المهمة.
+            </p>
           </div>
         </div>
-      </header>
-
-      {/* Hero Section */}
-      <main className="flex-1">
-        <section className="max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
-          <div className="inline-flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 px-4 py-2 rounded-full mb-6">
-            <Leaf className="w-4 h-4" />
-            <span className="text-sm font-semibold">{t("home.turningWaste")}</span>
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            {t("home.title")}
-          </h1>
-
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
-            {t("home.subtitle")}
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/marketplace">
-              <Button size="lg" className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
-                {t("home.browseDeals")} <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/auth/signin">
-              <Button size="lg" variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 px-8 py-6 text-lg">
-                {t("home.postFood")}
-              </Button>
-            </Link>
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="bg-gray-50 dark:bg-gray-800 py-16 border-y border-gray-100 dark:border-gray-700 transition-colors duration-300">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {language === "ar" ? "أثرنا على أرض الواقع" : "Our Real-World Impact"}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {language === "ar" ? "أرقام تعكس التزامنا بتقليل الهدر الغذائي" : "Numbers reflecting our commitment to reducing food waste"}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-              <div className="p-6">
-                <Leaf className="w-10 h-10 text-teal-600 mx-auto mb-3" />
-                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">1,000+</h3>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">{t("stats.mealsSaved")}</p>
-              </div>
-              <div className="p-6">
-                <Heart className="w-10 h-10 text-amber-600 mx-auto mb-3" />
-                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">50+</h3>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">{t("stats.charitiesSupported")}</p>
-              </div>
-              <div className="p-6">
-                <Users className="w-10 h-10 text-teal-600 mx-auto mb-3" />
-                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">200+</h3>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">{t("stats.partnerBusinesses")}</p>
-              </div>
-              <div className="p-6">
-                <TrendingUp className="w-10 h-10 text-amber-600 mx-auto mb-3" />
-                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">2.5T</h3>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">{t("stats.co2Reduced")}</p>
-              </div>
-            </div>
-
-            <div className="text-center mt-10">
-              <Link href="/stats">
-                <Button variant="outline" size="lg" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 px-8 py-3 text-base">
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  {language === "ar" ? "عرض التقرير الكامل" : "View Full Report"}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works */}
-        <section className="max-w-7xl mx-auto px-4 py-20">
-          <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-16">
-            {t("howItWorks.title")}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-teal-600">1</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3 dark:text-white">{t("howItWorks.step1Title")}</h3>
-              <p className="text-gray-600 dark:text-gray-300">{t("howItWorks.step1Desc")}</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-amber-600">2</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3 dark:text-white">{t("howItWorks.step2Title")}</h3>
-              <p className="text-gray-600 dark:text-gray-300">{t("howItWorks.step2Desc")}</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-teal-600">3</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3 dark:text-white">{t("howItWorks.step3Title")}</h3>
-              <p className="text-gray-600 dark:text-gray-300">{t("howItWorks.step3Desc")}</p>
-            </div>
-          </div>
-        </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 dark:bg-black text-white py-12 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Image src="/logo.png" alt="Qout Logo" width={30} height={30} className="object-contain" />
-            <span className="text-xl font-bold">{t("brand.name")}</span>
-          </div>
-          <p className="text-gray-400 mb-6">{t("footer.tagline")}</p>
-          <p className="text-gray-500 text-sm">{t("footer.copyright")}</p>
-        </div>
-      </footer>
     </div>
   );
 }
