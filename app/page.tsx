@@ -119,7 +119,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex" dir={isArabic ? "rtl" : "ltr"}>
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex flex-col fixed h-full">
+      <aside className={`w-64 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 flex flex-col fixed h-full ${isArabic ? "right-0 border-l" : "left-0 border-r"}`}>
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-800">
           <Link href="/" className="flex items-center gap-3">
@@ -186,7 +186,7 @@ export default function Home() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 mr-64 flex flex-col">
+      <main className={`flex-1 ${isArabic ? "mr-64" : "ml-64"} flex flex-col`}>
         {/* Top Bar */}
         <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -201,8 +201,8 @@ export default function Home() {
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.isUser ? "justify-start" : "justify-end"}`}>
-              <div className={`max-w-[70%] ${msg.isUser ? "order-2" : "order-1"}`}>
+            <div key={msg.id} className={`flex ${msg.isUser ? (isArabic ? "justify-start" : "justify-end") : (isArabic ? "justify-end" : "justify-start")}`}>
+              <div className={`max-w-[70%] ${msg.isUser ? (isArabic ? "order-1" : "order-2") : (isArabic ? "order-2" : "order-1")}`}>
                 <div
                   className={`p-4 rounded-2xl ${
                     msg.isUser
@@ -223,7 +223,7 @@ export default function Home() {
             </div>
           ))}
           {isTyping && (
-            <div className="flex justify-end">
+            <div className={`flex ${isArabic ? "justify-end" : "justify-start"}`}>
               <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
