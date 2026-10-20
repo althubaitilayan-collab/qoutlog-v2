@@ -13,11 +13,7 @@ interface Message {
   time: string;
 }
 
-// FIX: Changed to async and added Promise type for params
 export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
-  // We don't strictly need to use 'id' for this mock, but we await it to prevent build errors
-  // const { id } = await params; 
-
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: "مرحباً، أنا مهتم بطلب 500 كجم من صلصة ناكيبا. هل السعر قابل للتفاوض؟", sender: "buyer", time: "10:30 ص" },
     { id: 2, text: "أهلاً بك! نعم، يمكننا مناقشة السعر للكميات الكبيرة. ما هو العرض الذي تقترحه؟", sender: "supplier", time: "10:32 ص" },
@@ -52,25 +48,24 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col" dir="rtl">
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      {/* Header - Fixed */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/supplier/dashboard" className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-teal-600">
             <ArrowRight className="w-4 h-4" /> العودة للوحة التحكم
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-              <Package className="w-5 h-5 text-teal-600" />
-            </div>
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white">مصنع الذهب</p>
-              <p className="text-xs text-green-600 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-600 rounded-full"></span> متصل الآن
-              </p>
+            <LanguageThemeSwitcher />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
+                <Package className="w-5 h-5 text-teal-600" />
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 dark:text-white">مصنع الذهب</p>
+                <p className="text-xs text-green-600 flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-600 rounded-full"></span> متصل الآن
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +73,6 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
 
       {/* Chat Area */}
       <main className="flex-1 max-w-4xl mx-auto w-full flex flex-col">
-        {/* Order Info Bar */}
         <div className="bg-amber-50 dark:bg-amber-900/10 border-b border-amber-200 dark:border-amber-900/30 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Package className="w-5 h-5 text-amber-600" />
@@ -96,7 +90,6 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           </Button>
         </div>
 
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-gray-950">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.sender === "buyer" ? "justify-start" : "justify-end"}`}>
@@ -118,7 +111,6 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           ))}
         </div>
 
-        {/* Input */}
         <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4">
           <div className="flex gap-2">
             <input

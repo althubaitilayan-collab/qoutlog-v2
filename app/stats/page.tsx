@@ -14,39 +14,40 @@ export default function StatsPage() {
   ];
 
   const cities = [
-    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: "🏙️" },
+    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: "️" },
     { name: "جدة", businesses: 14, surplus: "41 طن", icon: "🌊" },
-    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: "🏭" },
+    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: "" },
   ];
 
   const businessTypes = [
-    { type: "مصانع", count: 12, icon: "" },
+    { type: "مصانع", count: 12, icon: "🏭" },
     { type: "موردون", count: 10, icon: "🚛" },
     { type: "سوبرماركت", count: 9, icon: "🛒" },
-    { type: "مطاعم", count: 7, icon: "️" },
+    { type: "مطاعم", count: 7, icon: "🍽️" },
     { type: "جمعيات خيرية", count: 5, icon: "🤝" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      {/* Header - Fixed */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
             <img src="/logo.png" alt="Qout Logo" width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} />
             <span className="text-xl font-bold text-gray-900 dark:text-white">قوت - الإحصائيات</span>
           </Link>
-          <Link href="/">
-            <Button variant="outline" size="sm">
-              <ArrowRight className="w-4 h-4 ml-2" /> الرئيسية
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageThemeSwitcher />
+            <Link href="/">
+              <Button variant="outline" size="sm">
+                <ArrowRight className="w-4 h-4 ml-2" /> الرئيسية
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
+      {/* Hero */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 dark:from-teal-800 dark:to-teal-900 text-white py-16">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <TrendingUp className="w-12 h-12 mx-auto mb-4 text-yellow-300" />

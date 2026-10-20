@@ -35,8 +35,6 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simulate registration
     setTimeout(() => {
       setIsLoading(false);
       router.push("/supplier/dashboard");
@@ -45,21 +43,21 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col" dir="rtl">
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
-      <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      {/* Header - Fixed */}
+      <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image src="/logo.png" alt="Qout Logo" width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} />
             <span className="text-xl font-bold text-gray-900 dark:text-white">قوت</span>
           </div>
-          {step === 2 && (
-            <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-teal-600">
-              <ArrowLeft className="w-4 h-4 rotate-180" /> رجوع
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            <LanguageThemeSwitcher />
+            {step === 2 && (
+              <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-teal-600">
+                <ArrowLeft className="w-4 h-4 rotate-180" /> رجوع
+              </button>
+            )}
+          </div>
         </div>
       </header>
 

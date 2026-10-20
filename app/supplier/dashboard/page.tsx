@@ -4,7 +4,7 @@ import { LanguageThemeSwitcher } from "../../components/LanguageThemeSwitcher";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../../components/ui/button";
-import { Package, MessageSquare, BarChart3, Plus, ArrowRight, Clock, CheckCircle, AlertCircle, Truck, CreditCard } from "lucide-react";
+import { Package, MessageSquare, BarChart3, Plus, ArrowRight, Clock, CheckCircle, AlertCircle, CreditCard } from "lucide-react";
 
 export default function SupplierDashboardPage() {
   const stats = [
@@ -14,7 +14,6 @@ export default function SupplierDashboardPage() {
     { label: "إجمالي المبيعات", value: "45,000 ر.س", icon: CreditCard, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
   ];
 
-  // Updated requests with status flow
   const recentRequests = [
     { id: 1, buyer: "سوبرماركت الأمانة", product: "صلصة ناكيبا", quantity: "500 كجم", status: "pending", time: "منذ ساعتين", step: 1 },
     { id: 2, buyer: "مطعم البركة", product: "تابلعات متنوعة", quantity: "200 كجم", status: "negotiating", time: "منذ 5 ساعات", step: 2 },
@@ -34,21 +33,21 @@ export default function SupplierDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
+      {/* Header - Fixed */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo.png" alt="Qout Logo" width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} />
             <span className="text-xl font-bold text-gray-900 dark:text-white">قوت - لوحة التحكم</span>
           </Link>
-          <Link href="/marketplace">
-            <Button variant="outline" size="sm" className="border-gray-300 dark:border-gray-700">
-              <ArrowRight className="w-4 h-4 ml-2" /> السوق العام
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageThemeSwitcher />
+            <Link href="/marketplace">
+              <Button variant="outline" size="sm" className="border-gray-300 dark:border-gray-700">
+                <ArrowRight className="w-4 h-4 ml-2" /> السوق العام
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

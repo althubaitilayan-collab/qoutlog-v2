@@ -6,7 +6,6 @@ import { Button } from "../components/ui/button";
 import { ArrowRight, CheckCircle, CreditCard, Shield, Truck, Package } from "lucide-react";
 
 export default function CheckoutPage() {
-  // Mock data based on PDF
   const orderDetails = {
     product: "صلصة ناكيبا",
     supplier: "مصنع الذهب",
@@ -20,40 +19,34 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      {/* Header - Fixed */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
             <img src="/logo.png" alt="Qout Logo" width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} />
             <span className="text-xl font-bold text-gray-900 dark:text-white">قوت - إتمام الطلب</span>
           </Link>
-          <Link href="/marketplace">
-            <Button variant="outline" size="sm">
-              <ArrowRight className="w-4 h-4 ml-2" /> العودة للسوق
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageThemeSwitcher />
+            <Link href="/marketplace">
+              <Button variant="outline" size="sm">
+                <ArrowRight className="w-4 h-4 ml-2" /> العودة للسوق
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Order Summary (Right Side in RTL) */}
           <div className="md:col-span-2 space-y-6">
-            
             {/* Status Tracker */}
             <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">حالة الطلب</h2>
               <div className="flex items-center justify-between relative">
-                {/* Progress Line */}
                 <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 -z-0 transform -translate-y-1/2"></div>
                 <div className="absolute top-1/2 left-0 right-1/2 h-1 bg-teal-600 -z-0 transform -translate-y-1/2"></div>
 
-                {/* Steps */}
                 <div className="relative z-10 flex flex-col items-center">
                   <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">1</div>
                   <span className="text-xs mt-2 text-teal-600 font-semibold">تأكيد الطلب</span>
@@ -112,7 +105,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order Summary Sidebar (Left Side in RTL) */}
+          {/* Order Summary Sidebar */}
           <div className="md:col-span-1">
             <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm sticky top-24">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">ملخص الطلب</h3>
@@ -123,7 +116,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <p className="font-bold text-gray-900 dark:text-white">{orderDetails.product}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{orderDetails.supplier}</p>
+                  <p className="text-sm text-gray-500">{orderDetails.supplier}</p>
                   <p className="text-xs text-teal-600 mt-1 font-semibold">{orderDetails.quantity}</p>
                 </div>
               </div>
@@ -137,7 +130,6 @@ export default function CheckoutPage() {
               </p>
             </div>
           </div>
-
         </div>
       </main>
     </div>

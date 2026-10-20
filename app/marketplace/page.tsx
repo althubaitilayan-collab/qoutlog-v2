@@ -2,7 +2,6 @@
 
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageThemeSwitcher } from "../components/LanguageThemeSwitcher";
-import { AIChatWidget } from "../components/AIChatWidget";
 import Link from "next/link";
 import { Button } from "../components/ui/button";
 import { Leaf, MapPin, Clock, ArrowLeft, Package, Apple, Wheat, Carrot, Search, Sparkles } from "lucide-react";
@@ -70,15 +69,8 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        <LanguageThemeSwitcher />
-      </div>
-
-      {/* AI Chat Widget */}
-      <AIChatWidget />
-
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      {/* Header - Fixed */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
             <img src="/logo.png" alt="Qout Logo" width="40" height="40" style={{ width: "40px", height: "40px", objectFit: "contain" }} />
@@ -88,6 +80,7 @@ export default function MarketplacePage() {
             <Link href="/stats">
               <Button variant="outline" size="sm">الإحصائيات</Button>
             </Link>
+            <LanguageThemeSwitcher />
             <Link href="/">
               <Button variant="outline" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" /> الرئيسية
