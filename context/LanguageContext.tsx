@@ -1,158 +1,197 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 type Language = "en" | "ar";
+
+interface Translations {
+  [key: string]: string;
+}
+
+const translations: Record<Language, Translations> = {
+  en: {
+    "brand.name": "Qout",
+    "nav.marketplace": "Marketplace",
+    "nav.about": "About Us",
+    "nav.contact": "Contact",
+    "nav.signIn": "Sign In",
+    "home.turningWaste": "Turning Waste into Value",
+    "home.title": "From Surplus to Sustenance",
+    "home.subtitle": "Connecting surplus food with those who need it through an AI-powered smart marketplace.",
+    "home.browseDeals": "Browse Food Deals",
+    "home.postFood": "Post Surplus Food",
+    "stats.mealsSaved": "Meals Saved",
+    "stats.charitiesSupported": "Charities Supported",
+    "stats.partnerBusinesses": "Partner Businesses",
+    "stats.co2Reduced": "Tons of CO₂ Reduced",
+    "howItWorks.title": "How It Works",
+    "howItWorks.step1Title": "Register Your Business",
+    "howItWorks.step1Desc": "Sign up as a factory, supermarket, restaurant, or charity.",
+    "howItWorks.step2Title": "Post or Request",
+    "howItWorks.step2Desc": "List your surplus food or use AI to find exactly what you need.",
+    "howItWorks.step3Title": "Complete Transaction",
+    "howItWorks.step3Desc": "Negotiate, confirm, and arrange pickup or delivery seamlessly.",
+    "footer.tagline": "Connecting surplus food with those who need it.",
+    "footer.copyright": "© 2026 Qout. All rights reserved.",
+    "marketplace.title": "Smart Marketplace",
+    "marketplace.subtitle": "Find the best surplus food deals matched to your needs.",
+    "marketplace.noListings": "No listings available",
+    "marketplace.checkBack": "Check back later or post your own surplus.",
+    "marketplace.claimButton": "Request Purchase",
+    "dashboard.title": "Your Impact Dashboard",
+    "dashboard.welcomeBack": "Welcome back,",
+    "dashboard.foodSaved": "Food Saved",
+    "dashboard.co2Reduced": "CO₂ Reduced",
+    "dashboard.waterSaved": "Water Saved",
+    "dashboard.pointsEarned": "Points Earned",
+    "dashboard.recentClaims": "Recent Claims",
+    "dashboard.goToMarketplace": "Go to Marketplace",
+    "dashboard.noClaims": "No recent claims.",
+    
+    // AI Assistant
+    "ai.welcome": "Welcome to Qout! 🌱\nI am your smart assistant for managing food surplus.\n\nHow can I help you today?",
+    "ai.placeholder": "Write your request here... Example: I need 500kg of sauce",
+    "ai.quickActions": "Quick Actions:",
+    "ai.disclaimer": "Qout can make mistakes. Verify important information.",
+    "ai.searchSuppliers": "🔍 Search for Suppliers",
+    "ai.viewStats": "📊 View Statistics",
+    "ai.dashboard": "🏭 Supplier Dashboard",
+    "ai.checkout": "💳 Complete Order",
+    "ai.example1": "I need 500kg of sauce from Riyadh",
+    "ai.example2": "Surplus oils for sale",
+    "ai.example3": "Canned goods in large quantities",
+    "ai.example4": "Fresh juices in large quantities",
+    "ai.responseStats": "📊 Here are Qout's statistics:\n\n• 40+ registered businesses\n• 120 tons of surplus food\n• 85% match rate\n• 3 cities covered\n\nWould you like to see full details?",
+    "ai.responseMarketplace": "🔍 Searching for suitable suppliers...\n\nFound 3 matching results:\n\n1. Golden Factory - Nakiba Sauce (2000 kg)\n2. Palm Workshop - Surplus Oils (800 kg)\n3. Al-Amin Warehouse - Canned Goods (5000 units)\n\nWould you like to open the full marketplace?",
+    "ai.responseDashboard": "🏭 Welcome to the Dashboard!\n\nYou have:\n• 12 active products\n• 5 pending requests\n• 28 completed deals\n• 3 new messages\n\nWould you like to enter the dashboard?",
+    "ai.responseCheckout": "💳 Your order summary:\n\n• Product value: 9,000 SAR\n• Delivery fee: 350 SAR\n• Service fee: 270 SAR\n• Total: 9,620 SAR\n\nWould you like to complete payment?",
+    "ai.responseDefault": "I understood your request: \"{query}\"\n\nI can help you with:\n🔍 Searching for suppliers\n📊 Viewing statistics\n🏭 Managing the dashboard\n💳 Completing orders\n\nWhat would you like to do?",
+    
+    // Sidebar & Header
+    "sidebar.marketplace": "Marketplace",
+    "sidebar.stats": "Statistics",
+    "sidebar.dashboard": "Dashboard",
+    "sidebar.orders": "Orders",
+    "sidebar.signIn": "Sign In",
+    "header.aiAssistant": "Qout Smart Assistant",
+    
+    // Actions
+    "action.viewStats": "View Full Statistics",
+    "action.openMarket": "Open Marketplace",
+    "action.enterDashboard": "Enter Dashboard",
+    "action.completeOrder": "Complete Order",
+  },
+  ar: {
+    "brand.name": "قوت",
+    "nav.marketplace": "السوق",
+    "nav.about": "من نحن",
+    "nav.contact": "اتصل بنا",
+    "nav.signIn": "تسجيل الدخول",
+    "home.turningWaste": "تحويل الهدر إلى قيمة",
+    "home.title": "من الفائض إلى الاستدامة",
+    "home.subtitle": "نربط فائض الطعام بمن يحتاجه من خلال سوق ذكي مدعوم بالذكاء الاصطناعي.",
+    "home.browseDeals": "تصفح عروض الطعام",
+    "home.postFood": "أضف فائض الطعام",
+    "stats.mealsSaved": "وجبة تم إنقاذها",
+    "stats.charitiesSupported": "جمعية مدعومة",
+    "stats.partnerBusinesses": "شركة شريكة",
+    "stats.co2Reduced": "طن CO₂ تم توفيره",
+    "howItWorks.title": "كيف تعمل المنصة",
+    "howItWorks.step1Title": "سجل منشأتك",
+    "howItWorks.step1Desc": "سجل كـ مصنع، سوبرماركت، مطعم، أو جمعية خيرية.",
+    "howItWorks.step2Title": "أضف أو اطلب",
+    "howItWorks.step2Desc": "أضف فائض طعامك أو استخدم الذكاء الاصطناعي للعثور على ما تحتاجه بالضبط.",
+    "howItWorks.step3Title": "أكمل الصفقة",
+    "howItWorks.step3Desc": "تفاوض، أكد، ونظم الاستلام أو التوصيل بسلاسة.",
+    "footer.tagline": "نربط فائض الطعام بمن يحتاجه.",
+    "footer.copyright": "© 2026 قوت. جميع الحقوق محفوظة.",
+    "marketplace.title": "السوق الذكي",
+    "marketplace.subtitle": "اعثر على أفضل عروض الطعام الفائض المطابقة لاحتياجاتك.",
+    "marketplace.noListings": "لا توجد عروض حالياً",
+    "marketplace.checkBack": "تحقق لاحقاً أو أضف فائضك الخاص.",
+    "marketplace.claimButton": "طلب شراء",
+    "dashboard.title": "لوحة تحكم الأثر الخاص بك",
+    "dashboard.welcomeBack": "مرحباً بعودتك،",
+    "dashboard.foodSaved": "طعام تم إنقاذه",
+    "dashboard.co2Reduced": "كربون تم توفيره",
+    "dashboard.waterSaved": "مياه تم توفيرها",
+    "dashboard.pointsEarned": "نقاط مكتسبة",
+    "dashboard.recentClaims": "آخر الطلبات",
+    "dashboard.goToMarketplace": "الذهاب للسوق",
+    "dashboard.noClaims": "لا توجد طلبات حديثة.",
+
+    // AI Assistant
+    "ai.welcomeAr": "مرحباً بك في قوت! 🌱\nأنا مساعدك الذكي لإدارة فائض الطعام.\n\nكيف يمكنني مساعدتك اليوم؟",
+    "ai.placeholderAr": "اكتب طلبك هنا... مثال: أحتاج 500 كجم صلصة",
+    "ai.quickActionsAr": "إجراءات سريعة:",
+    "ai.disclaimerAr": "قوت يمكن أن يرتكب أخطاء. تحقق من المعلومات المهمة.",
+    "ai.searchSuppliersAr": "🔍 ابحث عن موردين",
+    "ai.viewStatsAr": "📊 عرض الإحصائيات",
+    "ai.dashboardAr": "🏭 لوحة تحكم المورد",
+    "ai.checkoutAr": "💳 إتمام طلب",
+    "ai.example1Ar": "أحتاج 500 كجم صلصة من الرياض",
+    "ai.example2Ar": "فائض زيوت للبيع",
+    "ai.example3Ar": "تابلعات بكميات كبيرة",
+    "ai.example4Ar": "عصائر طازجة بكميات كبيرة",
+    "ai.responseStatsAr": "📊 إليك إحصائيات منصة قوت:\n\n• 40+ منشأة مسجلة\n• 120 طن فائض غذائي\n• 85% معدل المطابقة\n• 3 مدن مغطاة\n\nهل تريد عرض التفاصيل الكاملة؟",
+    "ai.responseMarketplaceAr": "🔍 جاري البحث عن الموردين المناسبين...\n\nوجدت 3 نتائج مطابقة لطلبك:\n\n1. مصنع الذهب - صلصة ناكيبا (2000 كجم)\n2. معمل النخيل - فائض زيوت (800 كجم)\n3. مستودع الأمين - تابلعات (5000 كجم)\n\nهل تريد عرض السوق الكامل؟",
+    "ai.responseDashboardAr": "🏭 مرحباً بك في لوحة التحكم!\n\nلديك:\n• 12 منتج نشط\n• 5 طلبات قيد الانتظار\n• 28 صفقة مكتملة\n• 3 رسائل جديدة\n\nهل تريد الدخول للوحة التحكم؟",
+    "ai.responseCheckoutAr": "💳 ملخص طلبك:\n\n• قيمة المنتجات: 9,000 ر.س\n• رسوم التوصيل: 350 ر.س\n• رسوم الخدمة: 270 ر.س\n• الإجمالي: 9,620 ر.س\n\nهل تريد إتمام الدفع؟",
+    "ai.responseDefaultAr": "فهمت طلبك: \"{query}\"\n\nيمكنني مساعدتك في:\n🔍 البحث عن موردين\n📊 عرض الإحصائيات\n🏭 إدارة لوحة التحكم\n💳 إتمام الطلبات\n\nما الذي تريد فعله؟",
+
+    // Sidebar & Header
+    "sidebar.marketplaceAr": "السوق",
+    "sidebar.statsAr": "الإحصائيات",
+    "sidebar.dashboardAr": "لوحة التحكم",
+    "sidebar.ordersAr": "الطلبات",
+    "sidebar.signInAr": "تسجيل الدخول",
+    "header.aiAssistantAr": "مساعد قوت الذكي",
+
+    // Actions
+    "action.viewStatsAr": "عرض الإحصائيات الكاملة",
+    "action.openMarketAr": "فتح السوق",
+    "action.enterDashboardAr": "دخول لوحة التحكم",
+    "action.completeOrderAr": "إتمام الطلب",
+  },
+};
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
-  dir: "ltr" | "rtl";
+  t: (key: string, fallback?: string) => string;
 }
-
-const translations = {
-  en: {
-    "brand.name": "Qout",
-    "home.title": "From Surplus to Sustenance",
-    "home.subtitle": "Qout connects restaurants, factories, and warehouses with charities and consumers.",
-    "home.browseDeals": "Browse Food Deals",
-    "home.postFood": "Post Surplus Food",
-    "home.turningWaste": "Turning Waste into Value",
-    "nav.marketplace": "Marketplace",
-    "nav.about": "About Us",
-    "nav.contact": "Contact",
-    "nav.supplierLogin": "Supplier Login",
-    "nav.myDashboard": "My Dashboard",
-    "nav.signIn": "Sign In",
-    "stats.mealsSaved": "Meals Saved",
-    "stats.charitiesSupported": "Charities Supported",
-    "stats.partnerBusinesses": "Partner Businesses",
-    "stats.co2Reduced": "CO2 Reduced (kg)",
-    "howItWorks.title": "How Qout Works",
-    "howItWorks.step1Title": "Log Surplus",
-    "howItWorks.step1Desc": "Businesses list their excess food with quantity and expiry details in seconds.",
-    "howItWorks.step2Title": "Connect & Claim",
-    "howItWorks.step2Desc": "Charities claim for free, while consumers get access to heavily discounted deals.",
-    "howItWorks.step3Title": "Track Impact",
-    "howItWorks.step3Desc": "Earn points, track your CO2 savings, and build your sustainability story.",
-    "marketplace.title": "Available Surplus Food",
-    "marketplace.subtitle": "Claim food to support your community or get great deals.",
-    "marketplace.noListings": "No surplus food available right now.",
-    "marketplace.checkBack": "Check back soon, or encourage local businesses to join Qout!",
-    "marketplace.claimButton": "Claim This Listing",
-    "marketplace.claimedButton": "Already Claimed",
-    "dashboard.welcomeBack": "Welcome back,",
-    "dashboard.backToMarketplace": "Back to Marketplace",
-    "dashboard.title": "Your Impact Dashboard",
-    "dashboard.foodSaved": "Food Saved",
-    "dashboard.co2Reduced": "CO2 Reduced",
-    "dashboard.waterSaved": "Water Saved",
-    "dashboard.pointsEarned": "Points Earned",
-    "dashboard.recentClaims": "Your Recent Claims",
-    "dashboard.noClaims": "You haven't claimed any food yet.",
-    "dashboard.goToMarketplace": "Go to Marketplace",
-    "dashboard.signOut": "Sign Out",
-    "signIn.title": "Join Qout",
-    "signIn.name": "Your Name",
-    "signIn.email": "Email",
-    "signIn.role": "I am a:",
-    "signIn.consumer": "Consumer",
-    "signIn.charity": "Charity",
-    "signIn.supplier": "Supplier/Business",
-    "signIn.getStarted": "Get Started",
-    "signIn.signingIn": "Signing In...",
-    "supplier.title": "Post Surplus Food",
-    "supplier.subtitle": "Turn your food waste into community value.",
-    "supplier.foodName": "Food Name",
-    "supplier.quantity": "Quantity (kg)",
-    "supplier.expiry": "Expiry Date & Time",
-    "supplier.description": "Description (Optional)",
-    "supplier.uploadPhoto": "Upload Photo",
-    "supplier.clickToUpload": "Click to upload photo",
-    "supplier.uploading": "Uploading...",
-    "supplier.postButton": "Post Surplus Food",
-    "footer.tagline": "Turning food waste into community value.",
-    "footer.copyright": "© 2026 Qout. All rights reserved.",
-  },
-  ar: {
-    "brand.name": "قوت",
-    "home.title": "من الفائض إلى الاستدامة",
-    "home.subtitle": "يربط قوت المطاعم والمصانع والمستودعات مع الجمعيات الخيرية والمستهلكين.",
-    "home.browseDeals": "تصفح العروض",
-    "home.postFood": "نشر فائض الطعام",
-    "home.turningWaste": "تحويل الهدر إلى قيمة",
-    "nav.marketplace": "السوق",
-    "nav.about": "من نحن",
-    "nav.contact": "اتصل بنا",
-    "nav.supplierLogin": "دخول الموردين",
-    "nav.myDashboard": "لوحتي",
-    "nav.signIn": "تسجيل الدخول",
-    "stats.mealsSaved": "وجبات تم إنقاذها",
-    "stats.charitiesSupported": "جمعيات مدعومة",
-    "stats.partnerBusinesses": "شركات شريكة",
-    "stats.co2Reduced": "ثاني أكسيد الكربون المخفض (كغ)",
-    "howItWorks.title": "كيف يعمل قوت",
-    "howItWorks.step1Title": "تسجيل الفائض",
-    "howItWorks.step1Desc": "تدرج الشركات طعامها الزائد مع الكمية وتاريخ الانتهاء في ثوانٍ.",
-    "howItWorks.step2Title": "التواصل والمطالبة",
-    "howItWorks.step2Desc": "تطالب الجمعيات الخيرية مجاناً، بينما يحصل المستهلكون على عروض مخفضة بشكل كبير.",
-    "howItWorks.step3Title": "تتبع الأثر",
-    "howItWorks.step3Desc": "اكسب النقاط، تتبع توفيرك لثاني أكسيد الكربون، وابنِ قصة استدامتك.",
-    "marketplace.title": "فائض الطعام المتاح",
-    "marketplace.subtitle": "اطلب الطعام لدعم مجتمعك أو احصل على عروض رائعة.",
-    "marketplace.noListings": "لا يوجد فائض طعام متاح حالياً.",
-    "marketplace.checkBack": "تحقق مرة أخرى قريباً، أو شجع الشركات المحلية على الانضمام لقوت!",
-    "marketplace.claimButton": "اطلب هذه القائمة",
-    "marketplace.claimedButton": "تم الطلب بالفعل",
-    "dashboard.welcomeBack": "مرحباً بعودتك،",
-    "dashboard.backToMarketplace": "العودة للسوق",
-    "dashboard.title": "لوحة الأثر الخاصة بك",
-    "dashboard.foodSaved": "الطعام المنقذ",
-    "dashboard.co2Reduced": "ثاني أكسيد الكربون المخفض",
-    "dashboard.waterSaved": "الماء الموفر",
-    "dashboard.pointsEarned": "النقاط المكتسبة",
-    "dashboard.recentClaims": "طلباتك الأخيرة",
-    "dashboard.noClaims": "لم تطلب أي طعام بعد.",
-    "dashboard.goToMarketplace": "اذهب للسوق",
-    "dashboard.signOut": "تسجيل الخروج",
-    "signIn.title": "انضم لقوت",
-    "signIn.name": "اسمك",
-    "signIn.email": "البريد الإلكتروني",
-    "signIn.role": "أنا:",
-    "signIn.consumer": "مستهلك",
-    "signIn.charity": "جمعية خيرية",
-    "signIn.supplier": "مورد/شركة",
-    "signIn.getStarted": "ابدأ الآن",
-    "signIn.signingIn": "جاري تسجيل الدخول...",
-    "supplier.title": "نشر فائض الطعام",
-    "supplier.subtitle": "حول هدر طعامك إلى قيمة مجتمعية.",
-    "supplier.foodName": "اسم الطعام",
-    "supplier.quantity": "الكمية (كغ)",
-    "supplier.expiry": "تاريخ ووقت الانتهاء",
-    "supplier.description": "الوصف (اختياري)",
-    "supplier.uploadPhoto": "رفع صورة",
-    "supplier.clickToUpload": "انقر لرفع صورة",
-    "supplier.uploading": "جاري الرفع...",
-    "supplier.postButton": "نشر فائض الطعام",
-    "footer.tagline": "تحويل هدر الطعام إلى قيمة مجتمعية.",
-    "footer.copyright": "© 2026 قوت. جميع الحقوق محفوظة.",
-  },
-};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("ar");
 
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations.en] || key;
+  useEffect(() => {
+    const savedLang = localStorage.getItem("qout-language") as Language;
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("qout-language", lang);
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
   };
 
-  const dir = language === "ar" ? "rtl" : "ltr";
+  const t = (key: string, fallback?: string) => {
+    if (language === "ar") {
+      const arKey = `${key}Ar`;
+      if (translations.ar[arKey]) {
+        return translations.ar[arKey];
+      }
+    }
+    return translations[language][key] || fallback || key;
+  };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -160,6 +199,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (!context) throw new Error("useLanguage must be used within LanguageProvider");
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
   return context;
 }
