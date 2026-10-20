@@ -1,3 +1,123 @@
+"use client";
+
+import { useLanguage } from "@/context/LanguageContext";
+import { LanguageThemeSwitcher } from "./components/LanguageThemeSwitcher";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "./components/ui/button";
+import { Leaf, BarChart3, Package, TrendingUp, Sparkles, Send, ArrowLeft, ShoppingBag, User } from "lucide-react";
+import { useState } from "react";
+
+interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+  action?: {
+    label: string;
+    href: string;
+  };
+}
+
+export default function Home() {
+  const { t, language } = useLanguage();
+  const isArabic = language === "ar";
+
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      text: isArabic ? t("ai.welcomeAr") : t("ai.welcome"),
+      isUser: false,
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  const quickActions = [
+    { label: isArabic ? t("ai.searchSuppliersAr") : t("ai.searchSuppliers"), href: "/marketplace" },
+    { label: isArabic ? t("ai.viewStatsAr") : t("ai.viewStats"), href: "/stats" },
+    { label: isArabic ? t("ai.dashboardAr") : t("ai.dashboard"), href: "/supplier/dashboard" },
+    { label: isArabic ? t("ai.checkoutAr") : t("ai.checkout"), href: "/checkout" },
+  ];
+
+  const exampleQueries = [
+    isArabic ? t("ai.example1Ar") : t("ai.example1"),
+    isArabic ? t("ai.example2Ar") : t("ai.example2"),
+    isArabic ? t("ai.example3Ar") : t("ai.example3"),
+    isArabic ? t("ai.example4Ar") : t("ai.example4"),
+  ];
+
+  const handleSend = async (text: string) => {
+    if (!text.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now(),
+      text: text,
+      isUser: true,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let aiResponse: Message;
+
+      if (text.includes("إحصائ") || text.includes("stats") || text.includes("أرقام") || text.includes("statistics")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: isArabic ? t("ai.responseStatsAr") : t("ai.responseStats"),
+          isUser: false,
+          action: {
+            label: isArabic ? t("action.viewStatsAr") : t("action.viewStats"),
+            href: "/stats",
+          },
+        };
+      } else if (text.includes("سوق") || text.includes("marketplace") || text.includes("بحث") || text.includes("مورد") || text.includes("search")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: isArabic ? t("ai.responseMarketplaceAr") : t("ai.responseMarketplace"),
+          isUser: false,
+          action: {
+            label: isArabic ? t("action.openMarketAr") : t("action.openMarket"),
+            href: "/marketplace",
+          },
+        };
+      } else if (text.includes("لوحة") || text.includes("dashboard") || text.includes("تحكم")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: isArabic ? t("ai.responseDashboardAr") : t("ai.responseDashboard"),
+          isUser: false,
+          action: {
+            label: isArabic ? t("action.enterDashboardAr") : t("action.enterDashboard"),
+            href: "/supplier/dashboard",
+          },
+        };
+      } else if (text.includes("دفع") || text.includes("checkout") || text.includes("طلب") || text.includes("order")) {
+        aiResponse = {
+          id: Date.now() + 1,
+          text: isArabic ? t("ai.responseCheckoutAr") : t("ai.responseCheckout"),
+          isUser: false,
+          action: {
+            label: isArabic ? t("action.completeOrderAr") : t("action.completeOrder"),
+            href: "/checkout",
+          },
+        };
+      } else {
+        const defaultText = isArabic ? t("ai.responseDefaultAr") : t("ai.responseDefault");
+        aiResponse = {
+          id: Date.now() + 1,
+          text: defaultText.replace("{query}", text),
+          isUser: false,
+        };
+      }
+
+      setMessages((prev) => [...prev, aiResponse]);
+      setIsTyping(false);
+    }, 1200);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex" dir={isArabic ? "rtl" : "ltr"}>
       {/* Sidebar Navigation */}
       <aside className="w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex flex-col fixed h-full">
         {/* Logo */}
@@ -10,8 +130,8 @@
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
-          <Link 
-            href="/marketplace" 
+          <Link
+            href="/marketplace"
             className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
           >
             <ShoppingBag className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
@@ -19,9 +139,9 @@
               {isArabic ? t("sidebar.marketplaceAr") : t("sidebar.marketplace")}
             </span>
           </Link>
-          
-          <Link 
-            href="/stats" 
+
+          <Link
+            href="/stats"
             className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
           >
             <BarChart3 className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
@@ -29,9 +149,9 @@
               {isArabic ? t("sidebar.statsAr") : t("sidebar.stats")}
             </span>
           </Link>
-          
-          <Link 
-            href="/supplier/dashboard" 
+
+          <Link
+            href="/supplier/dashboard"
             className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
           >
             <Package className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
@@ -39,9 +159,9 @@
               {isArabic ? t("sidebar.dashboardAr") : t("sidebar.dashboard")}
             </span>
           </Link>
-          
-          <Link 
-            href="/checkout" 
+
+          <Link
+            href="/checkout"
             className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
           >
             <TrendingUp className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
@@ -53,8 +173,8 @@
 
         {/* User Profile */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <Link 
-            href="/auth/signin" 
+          <Link
+            href="/auth/signin"
             className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
           >
             <User className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
@@ -64,3 +184,116 @@
           </Link>
         </div>
       </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 mr-64 flex flex-col">
+        {/* Top Bar */}
+        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-teal-600" />
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+              {isArabic ? t("header.aiAssistantAr") : t("header.aiAssistant")}
+            </h1>
+          </div>
+          <LanguageThemeSwitcher />
+        </header>
+
+        {/* Chat Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex ${msg.isUser ? "justify-start" : "justify-end"}`}>
+              <div className={`max-w-[70%] ${msg.isUser ? "order-2" : "order-1"}`}>
+                <div
+                  className={`p-4 rounded-2xl ${
+                    msg.isUser
+                      ? "bg-teal-600 text-white rounded-br-sm"
+                      : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-bl-sm shadow-sm"
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-line">{msg.text}</p>
+                  {msg.action && (
+                    <Link href={msg.action.href} className="mt-3 inline-block">
+                      <Button className="bg-teal-600 hover:bg-teal-700 text-white text-sm">
+                        {msg.action.label} <ArrowLeft className="w-4 h-4 mr-1" />
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="flex justify-end">
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        {messages.length <= 1 && (
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> {isArabic ? t("ai.quickActionsAr") : t("ai.quickActions")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {quickActions.map((action, index) => (
+                <Link key={index} href={action.href}>
+                  <Button variant="outline" size="sm" className="border-teal-600 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                    {action.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Input Area */}
+        <div className="p-6 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <div className="max-w-4xl mx-auto">
+            {/* Example Queries */}
+            {messages.length <= 1 && (
+              <div className="mb-4 flex flex-wrap gap-2 justify-center">
+                {exampleQueries.map((query, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSend(query)}
+                    className="text-xs px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 transition-colors border border-gray-200 dark:border-gray-700"
+                  >
+                    {query}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
+                placeholder={isArabic ? t("ai.placeholderAr") : t("ai.placeholder")}
+                className="flex-1 px-6 py-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+              />
+              <Button
+                onClick={() => handleSend(input)}
+                disabled={!input.trim()}
+                className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+              >
+                <Send className="w-5 h-5" />
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-3">
+              {isArabic ? t("ai.disclaimerAr") : t("ai.disclaimer")}
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
