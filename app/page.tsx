@@ -104,7 +104,7 @@ export default function Home() {
             id: Date.now() + 2,
             text: isArabic
               ? `🏭 **مصنع الذهب** يرد:\n\n"يمكنني تقديم ${lowerPrice + 1} ريال/كجم كحد أدنى، مع توصيل مجاني للرياض."\n\nهل تقبل هذا العرض؟`
-              : ` **Golden Factory** responds:\n\n"I can offer ${lowerPrice + 1} SAR/kg as minimum, with free delivery to Riyadh."\n\nDo you accept this offer?`,
+              : `🏭 **Golden Factory** responds:\n\n"I can offer ${lowerPrice + 1} SAR/kg as minimum, with free delivery to Riyadh."\n\nDo you accept this offer?`,
             isUser: false,
             isNegotiation: true,
             action: {
@@ -217,11 +217,22 @@ export default function Home() {
           </Link>
         </nav>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800 min-w-[256px]">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 min-w-[256px] space-y-2">
           <Link href="/auth/signin" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
             <User className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
             <span className="text-gray-700 dark:text-gray-300 font-medium">{isArabic ? t("sidebar.signInAr") : t("sidebar.signIn")}</span>
           </Link>
+          
+          {/* Go to Barakah Button */}
+          <a 
+            href="https://barakah.app" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white transition-all group shadow-md hover:shadow-lg"
+          >
+            <span className="text-xl">🛍️</span>
+            <span className="font-bold">{isArabic ? "اذهب إلى بركة" : "Go to Barakah"}</span>
+          </a>
         </div>
       </aside>
 
