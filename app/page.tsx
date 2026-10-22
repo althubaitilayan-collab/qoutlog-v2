@@ -5,7 +5,7 @@ import { LanguageThemeSwitcher } from "./components/LanguageThemeSwitcher";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./components/ui/button";
-import { BarChart3, Package, TrendingUp, Sparkles, Send, ArrowLeft, ShoppingBag, User, MessageCircle, CheckCircle, CreditCard } from "lucide-react";
+import { BarChart3, Package, TrendingUp, Sparkles, Send, ArrowLeft, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 interface Message {
@@ -23,6 +23,7 @@ interface Message {
 export default function Home() {
   const { t, language } = useLanguage();
   const isArabic = language === "ar";
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -34,9 +35,6 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [negotiationStep, setNegotiationStep] = useState(0);
-  const [agreedPrice, setAgreedPrice] = useState<number | null>(null);
-  const [agreedQuantity, setAgreedQuantity] = useState<number | null>(null);
-  const [agreedProduct, setAgreedProduct] = useState<string>("");
 
   const quickActions = [
     { label: isArabic ? t("ai.searchSuppliersAr") : t("ai.searchSuppliers"), href: "/marketplace" },
@@ -52,16 +50,14 @@ export default function Home() {
     isArabic ? t("ai.example4Ar") : t("ai.example4"),
   ];
 
-  // Simulate a negotiation flow
   const startNegotiation = () => {
     setNegotiationStep(1);
-    setAgreedProduct("Nakiba Sauce");
     
     const supplierMessage: Message = {
       id: Date.now(),
       text: isArabic 
-        ? "🏭 **مصنع الذهب** يرحب بك!\n\nلدينا عرض خاص:\n• المنتج: صلصة ناكيبا\n• الكمية المتاحة: 2,000 كجم\n• السعر: 18 ريال/كجم\n\nهل تريد التفاوض على السعر أو الكمية؟"
-        : "🏭 **Golden Factory** welcomes you!\n\nWe have a special offer:\n• Product: Nakiba Sauce\n• Available Quantity: 2,000 kg\n• Price: 18 SAR/kg\n\nWould you like to negotiate the price or quantity?",
+        ? " **مصنع الذهب** يرحب بك!\n\nلدينا عرض خاص:\n• المنتج: صلصة ناكيبا\n• الكمية المتاحة: 2,000 كجم\n• السعر: 18 ريال/كجم\n\nهل تريد التفاوض على السعر أو الكمية؟"
+        : " **Golden Factory** welcomes you!\n\nWe have a special offer:\n• Product: Nakiba Sauce\n• Available Quantity: 2,000 kg\n• Price: 18 SAR/kg\n\nWould you like to negotiate the price or quantity?",
       isUser: false,
       isNegotiation: true,
     };
@@ -84,23 +80,18 @@ export default function Home() {
     setTimeout(() => {
       let aiResponse: Message;
 
-      // Negotiation flow
       if (negotiationStep === 1) {
-        // User responds to initial offer
         const lowerPrice = 16;
-        setAgreedPrice(lowerPrice);
-        setAgreedQuantity(500);
         setNegotiationStep(2);
 
         aiResponse = {
           id: Date.now() + 1,
           text: isArabic
             ? `💬 **المشتري:** أقترح ${lowerPrice} ريال للكيلوغرام بدلاً من 18، لكمية 500 كجم.\n\n⏳ جاري إرسال العرض للمورد...`
-            : `💬 **Buyer:** I suggest ${lowerPrice} SAR/kg instead of 18, for 500 kg quantity.\n\n⏳ Sending offer to supplier...`,
+            : ` **Buyer:** I suggest ${lowerPrice} SAR/kg instead of 18, for 500 kg quantity.\n\n⏳ Sending offer to supplier...`,
           isUser: false,
         };
 
-        // Simulate supplier counter-offer after 2 seconds
         setTimeout(() => {
           const counterOffer: Message = {
             id: Date.now() + 2,
@@ -111,7 +102,7 @@ export default function Home() {
             isNegotiation: true,
             action: {
               label: isArabic ? "✅ قبول العرض والانتقال للدفع" : "✅ Accept Offer & Proceed to Payment",
-              href: `/checkout?product=${encodeURIComponent("Nakiba Sauce")}&price=${lowerPrice + 1}&quantity=500`,
+              href: `/checkout?product=Nakiba Sauce&price=${lowerPrice + 1}&quantity=500`,
               variant: "success",
             },
           };
@@ -123,7 +114,6 @@ export default function Home() {
         return;
       }
 
-      // Regular smart routing
       if (text.includes("إحصائ") || text.includes("stats") || text.includes("أرقام") || text.includes("statistics")) {
         aiResponse = {
           id: Date.now() + 1,
@@ -139,14 +129,7 @@ export default function Home() {
           id: Date.now() + 1,
           text: isArabic ? t("ai.responseMarketplaceAr") : t("ai.responseMarketplace"),
           isUser: false,
-          action: {
-            label: isArabic ? "🏭 بدء التفاوض مع مورد" : "🏭 Start Negotiation with Supplier",
-            href: "#",
-            variant: "primary",
-          },
         };
-        // Override the action to trigger negotiation instead of navigation
-        aiResponse.action = undefined;
         setTimeout(() => startNegotiation(), 500);
       } else if (text.includes("لوحة") || text.includes("dashboard") || text.includes("تحكم")) {
         aiResponse = {
@@ -192,17 +175,23 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex" dir={isArabic ? "rtl" : "ltr"}>
-      {/* Sidebar Navigation */}
-      <aside className={`w-64 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 flex flex-col fixed h-full ${isArabic ? "right-0 border-l" : "left-0 border-r"}`}>
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex relative" dir={isArabic ? "rtl" : "ltr"}>
+      {/* Sidebar */}
+      <aside 
+        className={`fixed h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 ease-in-out z-40 ${
+          isArabic ? "right-0 border-l" : "left-0 border-r"
+        } ${
+          sidebarOpen ? "w-64 translate-x-0" : isArabic ? "w-0 translate-x-full" : "w-0 -translate-x-full"
+        } overflow-hidden`}
+      >
+        <div className="p-6 border-b border-gray-200 dark:border-gray-800 min-w-[256px]">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo.png" alt="Qout Logo" width={40} height={40} className="object-contain" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">{t("brand.name")}</span>
           </Link>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 min-w-[256px]">
           <Link href="/marketplace" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
             <ShoppingBag className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
             <span className="text-gray-700 dark:text-gray-300 font-medium">{isArabic ? t("sidebar.marketplaceAr") : t("sidebar.marketplace")}</span>
@@ -221,7 +210,7 @@ export default function Home() {
           </Link>
         </nav>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 min-w-[256px]">
           <Link href="/auth/signin" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
             <User className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
             <span className="text-gray-700 dark:text-gray-300 font-medium">{isArabic ? t("sidebar.signInAr") : t("sidebar.signIn")}</span>
@@ -229,14 +218,38 @@ export default function Home() {
         </div>
       </aside>
 
+      {/* Overlay when sidebar is open on mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Main Content */}
-      <main className={`flex-1 ${isArabic ? "mr-64" : "ml-64"} flex flex-col`}>
-        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-600" />
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-              {isArabic ? t("header.aiAssistantAr") : t("header.aiAssistant")}
-            </h1>
+      <main className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? (isArabic ? "mr-64" : "ml-64") : "mr-0 ml-0"}`}>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            {/* Hamburger Menu Button */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle sidebar"
+            >
+              {sidebarOpen ? (
+                <X className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              )}
+            </button>
+            
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-teal-600" />
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+                {isArabic ? t("header.aiAssistantAr") : t("header.aiAssistant")}
+              </h1>
+            </div>
           </div>
           <LanguageThemeSwitcher />
         </header>
@@ -265,7 +278,7 @@ export default function Home() {
                           : "bg-teal-600 hover:bg-teal-700 text-white"
                       }`}
                     >
-                      {msg.action.variant === "success" && <CheckCircle className="w-4 h-4" />}
+                      {msg.action.variant === "success" && <Sparkles className="w-4 h-4" />}
                       {msg.action.label}
                       <ArrowLeft className="w-4 h-4" />
                     </button>
