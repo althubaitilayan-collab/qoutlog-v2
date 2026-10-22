@@ -8,8 +8,8 @@ import Image from "next/image";
 import { Button } from "./components/ui/button";
 import {
   BarChart3, Package, TrendingUp, Sparkles, Send, ArrowLeft,
-  ShoppingBag, User, Menu, X, Factory, MessageCircle, Clock,
-  Search, CheckCircle, CreditCard, Leaf, BadgePercent
+  ShoppingBag, User, Menu, X, Factory, Search, CheckCircle,
+  CreditCard, Leaf, BadgePercent, Heart
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -219,12 +219,21 @@ export default function Home() {
         </nav>
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 min-w-[256px] space-y-2">
+          {/* Donation Button - Highlighted */}
+          <Link
+            href="/donate"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all group shadow-md hover:shadow-lg"
+          >
+            <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="font-bold text-sm leading-tight">{isArabic ? "احصل على وجبة وساهم في وجبة توصل لمحتاج" : "Get a meal and donate a meal"}</span>
+          </Link>
+
           <Link href="/auth/signin" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
             <User className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
             <span className="text-gray-700 dark:text-gray-300 font-medium">{isArabic ? t("sidebar.signInAr") : t("sidebar.signIn")}</span>
           </Link>
 
-          {/* Go to Barakah Button - No Emoji */}
+          {/* Go to Barakah Button */}
           <a
             href="https://barakah.app"
             target="_blank"
@@ -357,6 +366,7 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Barakah Discount Popup */}
       <BarakahPopup />
     </div>
   );
