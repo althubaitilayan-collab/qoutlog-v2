@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./components/ui/button";
 import { BarChart3, Package, TrendingUp, Sparkles, Send, ArrowLeft, ShoppingBag, User, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Message {
   id: number;
@@ -25,16 +25,22 @@ export default function Home() {
   const isArabic = language === "ar";
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: isArabic ? t("ai.welcomeAr") : t("ai.welcome"),
-      isUser: false,
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [negotiationStep, setNegotiationStep] = useState(0);
+
+  // Initialize welcome message when language changes
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        text: isArabic ? t("ai.welcomeAr") : t("ai.welcome"),
+        isUser: false,
+      },
+    ]);
+    setNegotiationStep(0);
+  }, [language, isArabic, t]);
 
   const quickActions = [
     { label: isArabic ? t("ai.searchSuppliersAr") : t("ai.searchSuppliers"), href: "/marketplace" },
@@ -88,7 +94,7 @@ export default function Home() {
           id: Date.now() + 1,
           text: isArabic
             ? `💬 **المشتري:** أقترح ${lowerPrice} ريال للكيلوغرام بدلاً من 18، لكمية 500 كجم.\n\n⏳ جاري إرسال العرض للمورد...`
-            : ` **Buyer:** I suggest ${lowerPrice} SAR/kg instead of 18, for 500 kg quantity.\n\n⏳ Sending offer to supplier...`,
+            : `💬 **Buyer:** I suggest ${lowerPrice} SAR/kg instead of 18, for 500 kg quantity.\n\n⏳ Sending offer to supplier...`,
           isUser: false,
         };
 
@@ -218,7 +224,6 @@ export default function Home() {
         </div>
       </aside>
 
-      {/* Overlay when sidebar is open on mobile */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -228,10 +233,8 @@ export default function Home() {
 
       {/* Main Content */}
       <main className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? (isArabic ? "mr-64" : "ml-64") : "mr-0 ml-0"}`}>
-        {/* Header */}
         <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-20">
           <div className="flex items-center gap-3">
-            {/* Hamburger Menu Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
