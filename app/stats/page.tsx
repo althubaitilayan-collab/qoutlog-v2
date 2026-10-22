@@ -3,7 +3,10 @@
 import { LanguageThemeSwitcher } from "../components/LanguageThemeSwitcher";
 import Link from "next/link";
 import { Button } from "../components/ui/button";
-import { ArrowRight, Building2, Package, Target, MapPin, TrendingUp, Users, Leaf } from "lucide-react";
+import {
+  ArrowRight, Building2, Package, Target, MapPin, TrendingUp, Users, Leaf,
+  Landmark, Droplets, Factory, Truck, ShoppingCart, Utensils, Handshake, Mountain
+} from "lucide-react";
 
 export default function StatsPage() {
   const mainStats = [
@@ -13,28 +16,29 @@ export default function StatsPage() {
     { label: "مدن مغطاة", value: "13", icon: MapPin, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
   ];
 
+  // Cities with lucide icons instead of emojis
   const cities = [
-    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: "🏙️" },
-    { name: "جدة", businesses: 14, surplus: "41 طن", icon: "" },
-    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: "🏭" },
-    { name: "مكة المكرمة", businesses: 12, surplus: "35 طن", icon: "" },
-    { name: "المدينة المنورة", businesses: 9, surplus: "22 طن", icon: "🕌" },
-    { name: "الخبر", businesses: 6, surplus: "15 طن", icon: "" },
-    { name: "تبوك", businesses: 5, surplus: "12 طن", icon: "🌿" },
-    { name: "أبها", businesses: 4, surplus: "10 طن", icon: "⛰️" },
+    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: Landmark, color: "text-amber-600" },
+    { name: "جدة", businesses: 14, surplus: "41 طن", icon: Droplets, color: "text-blue-600" },
+    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: Factory, color: "text-gray-600" },
+    { name: "مكة المكرمة", businesses: 12, surplus: "35 طن", icon: Landmark, color: "text-emerald-600" },
+    { name: "المدينة المنورة", businesses: 9, surplus: "22 طن", icon: Landmark, color: "text-green-600" },
+    { name: "الخبر", businesses: 6, surplus: "15 طن", icon: Building2, color: "text-sky-600" },
+    { name: "تبوك", businesses: 5, surplus: "12 طن", icon: Mountain, color: "text-teal-600" },
+    { name: "أبها", businesses: 4, surplus: "10 طن", icon: Mountain, color: "text-indigo-600" },
   ];
 
+  // Business types with lucide icons instead of emojis
   const businessTypes = [
-    { type: "مصانع", count: 12, icon: "" },
-    { type: "موردون", count: 10, icon: "" },
-    { type: "سوبرماركت", count: 9, icon: "" },
-    { type: "مطاعم", count: 7, icon: "🍽️" },
-    { type: "جمعيات خيرية", count: 5, icon: "" },
+    { type: "مصانع", count: 12, icon: Factory, color: "text-gray-600" },
+    { type: "موردون", count: 10, icon: Truck, color: "text-blue-600" },
+    { type: "سوبرماركت", count: 9, icon: ShoppingCart, color: "text-green-600" },
+    { type: "مطاعم", count: 7, icon: Utensils, color: "text-orange-600" },
+    { type: "جمعيات خيرية", count: 5, icon: Handshake, color: "text-pink-600" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
@@ -52,7 +56,6 @@ export default function StatsPage() {
         </div>
       </header>
 
-      {/* Hero */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 dark:from-teal-800 dark:to-teal-900 text-white py-16">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <TrendingUp className="w-12 h-12 mx-auto mb-4 text-yellow-300" />
@@ -62,7 +65,6 @@ export default function StatsPage() {
       </div>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
-        {/* Main Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {mainStats.map((stat, index) => (
             <div key={index} className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm text-center">
@@ -76,55 +78,62 @@ export default function StatsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Cities Coverage */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-teal-600" /> تغطية المدن
             </h2>
             <div className="space-y-4">
-              {cities.map((city, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{city.icon}</span>
-                    <div>
-                      <p className="font-bold text-gray-900 dark:text-white">{city.name}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{city.businesses} منشأة</p>
+              {cities.map((city, index) => {
+                const Icon = city.icon;
+                return (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center`}>
+                        <Icon className={`w-5 h-5 ${city.color}`} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900 dark:text-white">{city.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{city.businesses} منشأة</p>
+                      </div>
+                    </div>
+                    <div className="text-left">
+                      <p className="font-bold text-teal-600">{city.surplus}</p>
+                      <p className="text-xs text-gray-500">فائض متاح</p>
                     </div>
                   </div>
-                  <div className="text-left">
-                    <p className="font-bold text-teal-600">{city.surplus}</p>
-                    <p className="text-xs text-gray-500">فائض متاح</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* Business Types */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <Users className="w-5 h-5 text-teal-600" /> أنواع المنشآت
             </h2>
             <div className="space-y-4">
-              {businessTypes.map((biz, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{biz.icon}</span>
-                    <p className="font-bold text-gray-900 dark:text-white">{biz.type}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-teal-600 rounded-full" style={{ width: `${(biz.count / 12) * 100}%` }}></div>
+              {businessTypes.map((biz, index) => {
+                const Icon = biz.icon;
+                return (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center">
+                        <Icon className={`w-5 h-5 ${biz.color}`} />
+                      </div>
+                      <p className="font-bold text-gray-900 dark:text-white">{biz.type}</p>
                     </div>
-                    <span className="font-bold text-teal-600 w-8 text-left">{biz.count}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-teal-600 rounded-full" style={{ width: `${(biz.count / 12) * 100}%` }}></div>
+                      </div>
+                      <span className="font-bold text-teal-600 w-8 text-left">{biz.count}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Environmental Impact Section */}
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 rounded-xl border border-teal-200 dark:border-teal-800 p-8 text-center">
           <Leaf className="w-12 h-12 text-teal-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">أثرنا البيئي</h2>
