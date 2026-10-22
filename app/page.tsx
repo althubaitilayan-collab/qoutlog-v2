@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageThemeSwitcher } from "./components/LanguageThemeSwitcher";
+import { BarakahPopup } from "./components/BarakahPopup";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./components/ui/button";
@@ -62,8 +63,8 @@ export default function Home() {
     const supplierMessage: Message = {
       id: Date.now(),
       text: isArabic 
-        ? " **مصنع الذهب** يرحب بك!\n\nلدينا عرض خاص:\n• المنتج: صلصة ناكيبا\n• الكمية المتاحة: 2,000 كجم\n• السعر: 18 ريال/كجم\n\nهل تريد التفاوض على السعر أو الكمية؟"
-        : " **Golden Factory** welcomes you!\n\nWe have a special offer:\n• Product: Nakiba Sauce\n• Available Quantity: 2,000 kg\n• Price: 18 SAR/kg\n\nWould you like to negotiate the price or quantity?",
+        ? "🏭 **مصنع الذهب** يرحب بك!\n\nلدينا عرض خاص:\n• المنتج: صلصة ناكيبا\n• الكمية المتاحة: 2,000 كجم\n• السعر: 18 ريال/كجم\n\nهل تريد التفاوض على السعر أو الكمية؟"
+        : "🏭 **Golden Factory** welcomes you!\n\nWe have a special offer:\n• Product: Nakiba Sauce\n• Available Quantity: 2,000 kg\n• Price: 18 SAR/kg\n\nWould you like to negotiate the price or quantity?",
       isUser: false,
       isNegotiation: true,
     };
@@ -103,7 +104,7 @@ export default function Home() {
             id: Date.now() + 2,
             text: isArabic
               ? `🏭 **مصنع الذهب** يرد:\n\n"يمكنني تقديم ${lowerPrice + 1} ريال/كجم كحد أدنى، مع توصيل مجاني للرياض."\n\nهل تقبل هذا العرض؟`
-              : `🏭 **Golden Factory** responds:\n\n"I can offer ${lowerPrice + 1} SAR/kg as minimum, with free delivery to Riyadh."\n\nDo you accept this offer?`,
+              : ` **Golden Factory** responds:\n\n"I can offer ${lowerPrice + 1} SAR/kg as minimum, with free delivery to Riyadh."\n\nDo you accept this offer?`,
             isUser: false,
             isNegotiation: true,
             action: {
@@ -361,6 +362,9 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Barakah Discount Popup */}
+      <BarakahPopup />
     </div>
   );
 }

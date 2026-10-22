@@ -10,26 +10,31 @@ export default function StatsPage() {
     { label: "منشأة مسجلة", value: "+40", icon: Building2, color: "text-teal-600", bg: "bg-teal-50 dark:bg-teal-900/20" },
     { label: "طن فائض غذائي", value: "120", icon: Package, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/20" },
     { label: "معدل المطابقة", value: "85%", icon: Target, color: "text-green-600", bg: "bg-green-50 dark:bg-green-900/20" },
-    { label: "مدن مغطاة", value: "3", icon: MapPin, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
+    { label: "مدن مغطاة", value: "13", icon: MapPin, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
   ];
 
   const cities = [
-    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: "️" },
-    { name: "جدة", businesses: 14, surplus: "41 طن", icon: "🌊" },
-    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: "" },
+    { name: "الرياض", businesses: 18, surplus: "52 طن", icon: "🏙️" },
+    { name: "جدة", businesses: 14, surplus: "41 طن", icon: "" },
+    { name: "الدمام", businesses: 8, surplus: "27 طن", icon: "🏭" },
+    { name: "مكة المكرمة", businesses: 12, surplus: "35 طن", icon: "" },
+    { name: "المدينة المنورة", businesses: 9, surplus: "22 طن", icon: "🕌" },
+    { name: "الخبر", businesses: 6, surplus: "15 طن", icon: "" },
+    { name: "تبوك", businesses: 5, surplus: "12 طن", icon: "🌿" },
+    { name: "أبها", businesses: 4, surplus: "10 طن", icon: "⛰️" },
   ];
 
   const businessTypes = [
-    { type: "مصانع", count: 12, icon: "🏭" },
-    { type: "موردون", count: 10, icon: "🚛" },
-    { type: "سوبرماركت", count: 9, icon: "🛒" },
+    { type: "مصانع", count: 12, icon: "" },
+    { type: "موردون", count: 10, icon: "" },
+    { type: "سوبرماركت", count: 9, icon: "" },
     { type: "مطاعم", count: 7, icon: "🍽️" },
-    { type: "جمعيات خيرية", count: 5, icon: "🤝" },
+    { type: "جمعيات خيرية", count: 5, icon: "" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
-      {/* Header - Fixed */}
+      {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3">
@@ -57,6 +62,7 @@ export default function StatsPage() {
       </div>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
+        {/* Main Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {mainStats.map((stat, index) => (
             <div key={index} className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm text-center">
@@ -70,6 +76,7 @@ export default function StatsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* Cities Coverage */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-teal-600" /> تغطية المدن
@@ -93,6 +100,7 @@ export default function StatsPage() {
             </div>
           </div>
 
+          {/* Business Types */}
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <Users className="w-5 h-5 text-teal-600" /> أنواع المنشآت
@@ -116,24 +124,25 @@ export default function StatsPage() {
           </div>
         </div>
 
+        {/* Environmental Impact Section */}
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 rounded-xl border border-teal-200 dark:border-teal-800 p-8 text-center">
           <Leaf className="w-12 h-12 text-teal-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">أثرنا البيئي</h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
             كل كيلوغرام من الطعام الذي ننقذه يعني تقليل انبعاثات الكربون وتوفير الموارد. معاً نبني مستقبلاً أكثر استدامة.
           </p>
-          <div className="grid grid-cols-3 gap-6 mt-8">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
               <p className="text-3xl font-bold text-teal-600">240 طن</p>
-              <p className="text-sm text-gray-500">CO₂ تم توفيره</p>
+              <p className="text-sm text-gray-500 mt-2">CO₂ تم توفيره</p>
             </div>
-            <div>
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
               <p className="text-3xl font-bold text-teal-600">1.2M لتر</p>
-              <p className="text-sm text-gray-500">مياه تم توفيرها</p>
+              <p className="text-sm text-gray-500 mt-2">مياه تم توفيرها</p>
             </div>
-            <div>
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
               <p className="text-3xl font-bold text-teal-600">500+</p>
-              <p className="text-sm text-gray-500">وجبة تم إنقاذها</p>
+              <p className="text-sm text-gray-500 mt-2">وجبة تم إنقاذها</p>
             </div>
           </div>
         </div>

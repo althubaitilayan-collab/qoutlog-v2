@@ -15,6 +15,13 @@ const businessTypes = [
   { id: "CHARITY", label: "جمعية خيرية", icon: Heart },
 ];
 
+// Comprehensive list of Saudi cities
+const saudiCities = [
+  "الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", "الخبر", "الظهران",
+  "تبوك", "أبها", "خميس مشيط", "حائل", "نجران", "جيزان", "بريدة", "عنيزة",
+  "القطيف", "الجبيل", "ينبع", "الباحة", "عرعر", "سكاكا", "حفر الباطن", "الطائف"
+];
+
 export default function SignInPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -43,7 +50,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col" dir="rtl">
-      {/* Header - Fixed */}
+      {/* Header */}
       <header className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -114,9 +121,9 @@ export default function SignInPage() {
                       required
                     >
                       <option value="">اختر المدينة</option>
-                      <option value="الرياض">الرياض</option>
-                      <option value="جدة">جدة</option>
-                      <option value="الدمام">الدمام</option>
+                      {saudiCities.map((city) => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
                     </select>
                   </div>
 
